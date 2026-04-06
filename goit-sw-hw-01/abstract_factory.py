@@ -1,0 +1,62 @@
+from abc import ABC, abstractmethod
+
+# 1. Абстрактний базовий клас Vehicle
+class Vehicle(ABC):
+    def __init__(self, make, model, spec):
+        self.make = make
+        self.model = model
+        self.spec = spec
+
+    @abstractmethod
+    def start_engine(self):
+        pass
+
+# 2. Змінені класи Car та Motorcycle
+class Car(Vehicle):
+    def start_engine(self):
+        print(f"Car: {self.make} {self.model} ({self.spec}): Двигун запущено")
+
+class Motorcycle(Vehicle):
+    def start_engine(self):
+        print(f"Motorcycle: {self.make} {self.model} ({self.spec}): Мотор заведено")
+
+# 3. Абстрактний клас VehicleFactory
+class VehicleFactory(ABC):
+    @abstractmethod
+    def create_car(self, make, model) -> Car:
+        pass
+
+    @abstractmethod
+    def create_motorcycle(self, make, model) -> Motorcycle:
+        pass
+
+# 4. Конкретні фабрики для регіонів
+class USVehicleFactory(VehicleFactory):
+    def create_car(self, make, model) -> Car:
+        return Car(make, model, "US Spec")
+
+    def create_motorcycle(self, make, model) -> Motorcycle:
+        return Motorcycle(make, model, "US Spec")
+
+class EUVehicleFactory(VehicleFactory):
+    def create_car(self, make, model) -> Car:
+        return Car(make, model, "EU Spec")
+
+    def create_motorcycle(self, make, model) -> Motorcycle:
+        return Motorcycle(make, model, "EU Spec")
+
+# 5. Використання фабрик для створення об'єктів
+def client_code(factory: VehicleFactory):
+    car = factory.create_car("Ford", "Mustang")
+    bike = factory.create_motorcycle("Harley-Davidson", "Sportster")
+    
+    car.start_engine()
+    bike.start_engine()
+
+print("--- Створення техніки для США ---")
+us_factory = USVehicleFactory()
+client_code(us_factory)
+
+print("\n--- Створення техніки для ЄС ---")
+eu_factory = EUVehicleFactory()
+client_code(eu_factory)
